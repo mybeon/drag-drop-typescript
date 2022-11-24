@@ -6,6 +6,8 @@ module.exports = {
   devServer: {
     open: true,
     port: 4000,
+    hot: true,
+    watchFiles: ["src/index.html"],
   },
   entry: "./src/index.ts",
   output: {
@@ -28,7 +30,7 @@ module.exports = {
   plugins: [
     new HtmlWebpackPlugin({
       filename: "index.html",
-      template: "./src/template.html",
+      template: "./src/index.html",
       minify: false,
     }),
   ],

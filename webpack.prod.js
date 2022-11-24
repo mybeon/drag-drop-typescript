@@ -2,7 +2,6 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
-const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = {
   mode: "production",
@@ -11,9 +10,12 @@ module.exports = {
     path: path.resolve(__dirname, "dist"),
     filename: "bundle.[contenthash].js",
     clean: true,
+    assetModuleFilename: "images/[hash][ext]",
   },
   optimization: {
-    minimizer: [new CssMinimizerPlugin(), new TerserPlugin()],
+    minimize: true,
+    splitChunks: { chunks: "all" },
+    minimizer: ["...", new CssMinimizerPlugin()],
   },
   module: {
     rules: [
@@ -23,14 +25,33 @@ module.exports = {
       },
       {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, "css-loader"],
+        use: [
+          MiniCssExtractPlugin.loader,
+          "css-loader",
+          {
+            loader: "postcss-loader",
+            options: {
+              postcssOptions: {
+                plugins: [["autoprefixer", { add: true, remove: false }]],
+              },
+            },
+          },
+        ],
+      },
+      {
+        test: /\.(png|jpe?g|gif)$/,
+        type: "asset/resource",
+      },
+      {
+        test: /\.html$/,
+        use: ["html-loader"],
       },
     ],
   },
   plugins: [
     new HtmlWebpackPlugin({
       filename: "index.html",
-      template: "./src/template.html",
+      template: "./src/index.html",
       minify: true,
     }),
     new MiniCssExtractPlugin({ filename: "[name].[contenthash].css" }),

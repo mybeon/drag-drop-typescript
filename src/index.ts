@@ -1,4 +1,9 @@
 import "./main.css";
+// @ts-ignore
+if (module.hot) {
+  // @ts-ignore
+  module.hot.accept();
+}
 
 interface Draggable {
   dragStart(e: DragEvent): void;
