@@ -2,6 +2,7 @@ const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin");
 
 module.exports = {
   mode: "production",
@@ -15,7 +16,15 @@ module.exports = {
   optimization: {
     minimize: true,
     splitChunks: { chunks: "all" },
-    minimizer: ["...", new CssMinimizerPlugin()],
+    minimizer: [
+      "...",
+      new CssMinimizerPlugin(),
+      new ImageMinimizerPlugin({
+        minimizer: {
+          implementation: ImageMinimizerPlugin.squooshMinify,
+        },
+      }),
+    ],
   },
   module: {
     rules: [
